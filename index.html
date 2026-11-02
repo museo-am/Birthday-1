@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Անիի ծնունդը</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Noto+Sans+Armenian:wght@400;500;700;800;900&family=Noto+Serif+Armenian:ital,wght@0,500;0,700&display=swap">
+<style>
+/* Layout: one centered phone-width column of "scenes", sealed by an envelope intro. Single lavender look by choice. */
+:root{
+  --bg:#F3EDFB; --bg2:#E6DAF8; --paper:#FFFDF9; --ink:#18141F; --muted:#5E566B;
+  --lav:#CDB8F2; --lav-soft:#EADFFB; --violet:#4A2D8F; --violet-2:#8B6BD9; --blush:#F6D7E2;
+  --display:'Noto Sans Armenian','Nunito',system-ui,sans-serif;
+  --body:'Noto Sans Armenian','Nunito',system-ui,sans-serif;
+  --serif:'Noto Serif Armenian',Georgia,serif;
+  --brand:'Nunito','Noto Sans Armenian',system-ui,sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;overflow-x:hidden;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  background:radial-gradient(120% 60% at 50% 0%, #FBF8FF 0%, var(--bg) 55%, var(--bg2) 100%) fixed}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid var(--violet-2);outline-offset:3px}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:96px;padding-block:72px 48px}
+.eyebrow{font-family:var(--brand);font-weight:800;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--violet-2)}
+.scene{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+.h2{font-family:var(--display);font-weight:800;font-size:clamp(30px,8vw,40px);line-height:1.15}
+.hint{font-size:15px;color:var(--muted);font-weight:500}
+
+/* ---------- Envelope intro ---------- */
+#intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+  padding:24px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));
+  background:radial-gradient(90% 70% at 50% 40%, #FBF8FF 0%, var(--lav-soft) 60%, var(--lav) 100%);
+  transition:opacity .7s ease .9s, visibility 0s linear 1.6s}
+#intro.gone{opacity:0;visibility:hidden}
+#intro .to{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,34px);text-align:center;line-height:1.2;transition:opacity .3s,transform .3s}
+#intro.open .to,#intro.open .pill,#intro.open .sound-note{opacity:0;transform:translateY(-8px);pointer-events:none}
+#intro .pill,#intro .sound-note{transition:opacity .3s,transform .3s}
+#intro .to small{display:block;font-family:var(--body);font-weight:500;font-size:16px;color:var(--muted);margin-top:8px}
+.env{position:relative;width:min(300px,78vw);aspect-ratio:3/2;max-width:100%;margin-top:56px;perspective:900px;animation:bob 3.2s ease-in-out infinite}
+.env-back{position:absolute;inset:0;border-radius:14px;background:#D9C9F5;z-index:0}
+.letter{position:absolute;left:8%;right:8%;top:8%;height:80%;border-radius:10px;background:var(--paper);z-index:2;
+  display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;color:var(--violet);font-size:20px;
+  transition:transform .8s cubic-bezier(.3,1.4,.5,1) .35s;box-shadow:0 6px 18px rgba(74,45,143,.15)}
+.env-front{position:absolute;inset:0;border-radius:14px;background:
+  linear-gradient(to top right, #E3D6F8 49.6%, transparent 50%) left/50% 100% no-repeat,
+  linear-gradient(to top left, #E3D6F8 49.6%, transparent 50%) right/50% 100% no-repeat;
+  box-shadow:0 30px 50px -24px rgba(46,26,94,.55);z-index:3}
+.env-flap{position:absolute;left:0;right:0;top:0;height:62%;transform-origin:top;background:#CDB8F2;
+  clip-path:polygon(0 0,100% 0,50% 100%);transition:transform .6s ease,z-index 0s linear .3s;z-index:4;border-radius:14px 14px 0 0}
+.seal{position:absolute;left:50%;top:62%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:var(--violet);
+  display:flex;align-items:center;justify-content:center;z-index:5;transition:opacity .3s;box-shadow:0 6px 14px rgba(74,45,143,.4)}
+#intro.open .env-flap{transform:rotateX(180deg);z-index:1;background:#BFA6EE}
+#intro.open .seal{opacity:0}
+#intro.open .letter{transform:translateY(-58%)}
+#intro.open .env{animation:none}
+.pill{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:16px 30px;font-weight:700;font-size:18px;
+  background:var(--ink);color:#fff;box-shadow:0 18px 30px -14px rgba(24,20,31,.6);transition:transform .2s}
+.pill:active{transform:scale(.96)}
+.sound-note{font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:center}
+
+/* ---------- Sound toggle ---------- */
+#snd{position:fixed;z-index:40;top:calc(14px + env(safe-area-inset-top, 0px));right:calc(14px + env(safe-area-inset-right, 0px));
+  width:48px;height:48px;border-radius:50%;border:1.5px solid var(--lav);background:rgba(255,253,249,.85);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center}
+#snd .bars{display:flex;gap:3px;align-items:flex-end;height:18px}
+#snd .bars i{width:3px;background:var(--violet);border-radius:2px;height:6px}
+#snd.on .bars i{animation:eq .9s ease-in-out infinite}
+#snd.on .bars i:nth-child(2){animation-delay:-.3s}#snd.on .bars i:nth-child(3){animation-delay:-.6s}#snd.on .bars i:nth-child(4){animation-delay:-.15s}
+
+/* ---------- Cake ---------- */
+.cake-stage{position:relative;width:280px;max-width:100%;height:300px;margin-top:8px}
+.plate{position:absolute;left:0;right:0;bottom:6px;height:26px;border-radius:50%;background:#FFFFFF;box-shadow:0 14px 26px -12px rgba(46,26,94,.45)}
+.tier{position:absolute;left:50%;transform:translateX(-50%);border-radius:18px 18px 12px 12px;overflow:hidden}
+.tier.t1{bottom:22px;width:240px;height:96px;background:var(--lav)}
+.tier.t2{bottom:112px;width:170px;height:80px;background:var(--paper)}
+.tier .drip{position:absolute;left:0;right:0;top:0;height:30px}
+.t1 .drip{background:radial-gradient(circle at 10px 16px,var(--paper) 10px,transparent 11px) 0 0/40px 30px repeat-x,linear-gradient(var(--paper),var(--paper)) 0 0/100% 14px no-repeat}
+.t2 .drip{background:radial-gradient(circle at 10px 14px,var(--violet-2) 9px,transparent 10px) 0 0/34px 26px repeat-x,linear-gradient(var(--violet-2),var(--violet-2)) 0 0/100% 12px no-repeat}
+.dots{position:absolute;left:0;right:0;bottom:16px;height:10px;background:radial-gradient(circle,#fff 3px,transparent 4px) 0 0/24px 10px repeat-x;opacity:.9}
+.candles{position:absolute;left:50%;bottom:188px;transform:translateX(-50%);display:flex;gap:30px}
+.candle{position:relative;width:44px;height:96px;border:0;background:none;padding:0}
+.candle .stick{position:absolute;left:50%;bottom:0;width:14px;margin-left:-7px;height:58px;border-radius:5px;
+  background:repeating-linear-gradient(135deg,#fff 0 7px,var(--violet-2) 7px 12px)}
+.candle .wick{position:absolute;left:50%;bottom:58px;width:2px;height:8px;margin-left:-1px;background:#3a3340}
+.flame{position:absolute;left:50%;bottom:64px;width:18px;height:28px;margin-left:-9px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(ellipse at 50% 75%,#fff 0 22%,#FFE6A8 40%,#FFB65C 70%,rgba(255,150,80,0) 72%);
+  transform-origin:50% 90%;animation:flick .18s ease-in-out infinite alternate;filter:drop-shadow(0 0 10px rgba(255,200,120,.9))}
+.flame::after{content:"";position:absolute;left:-22px;right:-22px;top:-14px;bottom:-14px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,140,.35),transparent 65%)}
+.candle.out .flame{animation:none;transform:scale(0);opacity:0;transition:transform .25s,opacity .25s}
+.smoke{position:absolute;left:50%;bottom:66px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:rgba(120,110,140,.35);opacity:0}
+.candle.out .smoke{animation:smoke 1.4s ease-out forwards}
+.counter{font-family:var(--brand);font-weight:800;font-size:15px;color:var(--violet);background:#fff;border:1.5px solid var(--lav);border-radius:999px;padding:8px 18px}
+.bday{display:grid;gap:4px;justify-items:center}
+.bday .big{font-family:var(--display);font-weight:900;font-size:clamp(40px,12vw,64px);line-height:1.08;letter-spacing:-.5px}
+.bday .big span{display:inline-block;padding:0 .28em .08em;border-radius:999px;background:var(--lav-soft)}
+.bday .big .name{background:var(--violet);color:#fff;margin-top:.12em}
+.celebrated .bday .big span{animation:pop .7s cubic-bezier(.3,1.6,.5,1) both}
+.celebrated .bday .big .name{animation-delay:.18s}
+.pre{transition:opacity .4s}
+.celebrated .pre{opacity:.0;height:0;overflow:hidden;margin:0}
+.bday{display:none}
+.celebrated .bday{display:grid}
+
+/* ---------- Letter ---------- */
+.card-letter{position:relative;width:100%;background:var(--paper);border-radius:28px;padding:40px 28px 34px;text-align:left;
+  box-shadow:0 30px 60px -36px rgba(46,26,94,.55);border:1px solid #EEE6FB}
+.card-letter::before{content:"";position:absolute;inset:10px;border:1.5px dashed var(--lav);border-radius:20px;pointer-events:none}
+.card-letter .dear{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--violet)}
+.card-letter p{font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.7;margin:14px 0 0;min-height:7em}
+.card-letter .sign{margin-top:18px;font-family:var(--serif);font-weight:700;text-align:right;color:var(--muted)}
+.caret{display:inline-block;width:2px;height:1.1em;background:var(--violet);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(1) infinite}
+
+/* ---------- Memories ---------- */
+.strip{width:calc(100% + 32px);margin:0 -16px;display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 24px 30px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.pol{flex:0 0 220px;scroll-snap-align:center;background:#fff;padding:12px 12px 16px;border-radius:8px;box-shadow:0 22px 36px -22px rgba(46,26,94,.55);text-align:left}
+.pol:nth-child(odd){transform:rotate(-3deg)}.pol:nth-child(even){transform:rotate(2.5deg)}
+.shot{position:relative;aspect-ratio:1;max-width:100%;border-radius:4px;overflow:hidden}
+.shot i{position:absolute;display:block;border-radius:50%}
+.s1{background:linear-gradient(#F8C9B8,#F6D7E2 55%,#D9C9F5)}
+.s1 .sun{width:54px;height:54px;left:58%;top:30%;background:#FFF3E0}
+.s1 .h1{width:160%;height:70%;left:-40%;top:62%;background:#8B6BD9}
+.s1 .h2{width:140%;height:60%;left:10%;top:72%;background:#4A2D8F}
+.s2{background:linear-gradient(#D7E9FA,#EADFFB 50%,#9EC3E8 51%,#7FA9DA)}
+.s2 .sun{width:46px;height:46px;left:20%;top:22%;background:#fff}
+.s2 .h1{width:120%;height:30%;left:-10%;top:86%;background:#F3E3C8}
+.s3{background:linear-gradient(#2E2540,#4A2D8F)}
+.s3 .sun{width:40px;height:40px;left:66%;top:16%;background:#FFF3D6;box-shadow:0 0 30px #FFF3D6}
+.s3 .h1{width:150%;height:60%;left:-25%;top:70%;background:#EADFFB}
+.s3 .st{width:4px;height:4px;background:#fff}
+.s4{background:linear-gradient(135deg,#F6D7E2,#CDB8F2)}
+.s4 .h1{width:70px;height:70px;left:50%;top:50%;margin:-35px 0 0 -35px;background:none;border-radius:0}
+.shot .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cap{margin-top:12px;font-family:var(--serif);font-weight:700;font-size:16px}
+.cap small{display:block;font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted)}
+
+/* ---------- Wishes ---------- */
+.wishes{width:100%;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.wish{width:100%;height:112px;border:0;background:none;padding:0;perspective:1000px}
+.wish .in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.wish.flipped .in{transform:rotateX(180deg)}
+.face{position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;gap:18px;padding:0 26px;text-align:left}
+.front{background:var(--violet);color:#fff;box-shadow:0 18px 30px -18px rgba(46,26,94,.8);justify-content:space-between}
+.front b{font-family:var(--brand);font-weight:900;font-size:40px;line-height:1}
+.front span{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;opacity:.9}
+.back{background:#fff;border:1.5px solid var(--lav);transform:rotateX(180deg);font-family:var(--serif);font-size:19px;line-height:1.4;font-weight:500;color:var(--ink);justify-content:center;text-align:center}
+
+/* ---------- Finale ---------- */
+.heart-btn{position:relative;width:132px;height:132px;border-radius:50%;border:0;background:var(--paper);box-shadow:0 26px 46px -22px rgba(74,45,143,.7),inset 0 0 0 8px var(--lav-soft);
+  display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.heart-btn:active{transform:scale(.92)}
+.heart-btn svg{animation:beat 1.2s ease-in-out infinite}
+.love{font-family:var(--display);font-weight:900;font-size:clamp(34px,10vw,52px);color:var(--violet);opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}
+.love.show{opacity:1;transform:none}
+.fly{position:fixed;z-index:30;pointer-events:none;animation:fly 1.6s ease-out forwards}
+
+footer{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:12px;color:var(--muted);font-size:14px}
+.logo{position:relative;width:150px;height:52px;display:flex;align-items:center;justify-content:center}
+.logo svg{position:absolute;inset:0}
+.logo b{position:relative;font-family:var(--brand);font-weight:900;font-size:27px;color:var(--ink);letter-spacing:.5px}
+
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:45}
+
+@keyframes bob{50%{transform:translateY(-8px) rotate(-1deg)}}
+@keyframes flick{from{transform:scaleY(1) rotate(-2deg)}to{transform:scaleY(1.12) rotate(2deg)}}
+@keyframes smoke{0%{opacity:.8;transform:translateY(0) scale(.6)}100%{opacity:0;transform:translateY(-60px) scale(2.4)}}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes blink{50%{opacity:0}}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+@keyframes eq{0%,100%{height:5px}50%{height:18px}}
+@keyframes fly{0%{transform:translate(0,0) scale(.4) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(var(--r));opacity:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div id="intro" role="dialog" aria-label="Անակնկալ">
+  <div class="to">Անի, քեզ համար<br>անակնկալ կա<small>Բացիր նամակը</small></div>
+  <div class="env" aria-hidden="true">
+    <div class="env-back"></div>
+    <div class="letter">Շնորհավոր</div>
+    <div class="env-front"></div>
+    <div class="env-flap"></div>
+    <div class="seal"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z" fill="#fff"/></svg></div>
+  </div>
+  <button class="pill" id="openBtn" type="button">Բացել նամակը
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </button>
+  <div class="sound-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/></svg>Միացրու ձայնը</div>
+</div>
+
+<button id="snd" type="button" aria-label="Միացնել կամ անջատել երաժշտությունը" aria-pressed="false"><span class="bars"><i></i><i></i><i></i><i></i></span></button>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<main class="wrap">
+
+  <section class="scene" id="cakeScene">
+    <div class="eyebrow">12 նոյեմբեր · Այսօր քո օրն է</div>
+    <div class="pre">
+      <h1 class="h2">Նախ՝ փչիր մոմերը</h1>
+      <p class="hint" style="margin:10px 0 0">Հպիր յուրաքանչյուր մոմին</p>
+    </div>
+    <div class="bday" aria-live="polite">
+      <h1 class="big"><span>Շնորհավոր</span><br><span>ծնունդդ,</span><br><span class="name">Անի</span></h1>
+    </div>
+    <div class="cake-stage">
+      <div class="candles">
+        <button class="candle" type="button" aria-label="Մոմ 1"><span class="stick"></span><span class="wick"></span><span class="flame"></span><span class="smoke"></span></button>
+        <button class="candle" type="button" aria-label="Մոմ 2"><span class="stick"></span><span class="wick"></span><span class="flame"></span><span class="smoke"></span></button>
+        <button class="candle" type="button" aria-label="Մոմ 3"><span class="stick"></span><span class="wick"></span><span class="flame"></span><span class="smoke"></span></button>
+      </div>
+      <div class="tier t2"><div class="drip"></div></div>
+      <div class="tier t1"><div class="drip"></div><div class="dots"></div></div>
+      <div class="plate"></div>
+    </div>
+    <div class="counter" id="counter">Մնաց 3 մոմ</div>
+  </section>
+
+  <section class="scene">
+    <div class="eyebrow">Նամակ</div>
+    <article class="card-letter">
+      <div class="dear">Սիրելի Անի,</div>
+      <p id="typed">Այսօր աշխարհը մի քիչ ավելի լուսավոր է, որովհետև այսօր քո օրն է։ Թող այս տարին լինի ժպիտներով, նոր քաղաքներով և իրականացած երազանքներով լի։ Դու արժանի ես ամենալավին։</p>
+      <div class="sign">Սիրով՝ Արամ</div>
+    </article>
+  </section>
+
+  <section class="scene">
+    <div class="eyebrow">Հուշեր</div>
+    <h2 class="h2">Մեր լավագույն պահերը</h2>
+    <p class="hint" style="margin:0">Թերթիր կողքի</p>
+    <div class="strip">
+      <figure class="pol" style="margin:0"><div class="shot s1"><img class="photo" src="m1.jpg" alt="Զույգը սրճարանում"></div><figcaption class="cap">Առաջին ճամփորդությունը<small>Դիլիջան · մայիս</small></figcaption></figure>
+      <figure class="pol" style="margin:0"><div class="shot s2"><img class="photo" src="m2.jpg" alt="Զույգը ծովափին մայրամուտին"></div><figcaption class="cap">Ծովի մոտ<small>Բաթումի · օգոստոս</small></figcaption></figure>
+      <figure class="pol" style="margin:0"><div class="shot s3"><img class="photo" src="m3.jpg" alt="Զույգը ձյան տակ լույսերի մոտ"></div><figcaption class="cap">Ձմեռային երեկո<small>Երևան · դեկտեմբեր</small></figcaption></figure>
+      <figure class="pol" style="margin:0"><div class="shot s4"><img class="photo" src="m4.jpg" alt="Զույգը տանը ֆիլմ է դիտում"></div><figcaption class="cap">Ամենաուրախ օրը<small>Այսօր</small></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="eyebrow">Մաղթանքներ</div>
+    <h2 class="h2">Երեք մաղթանք քեզ</h2>
+    <p class="hint" style="margin:0">Հպիր քարտերին</p>
+    <div class="wishes">
+      <button class="wish" type="button" aria-label="Մաղթանք 1"><div class="in"><div class="face front"><b>01</b><span>Բացիր մաղթանքը <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z" fill="#CDB8F2"/></svg></span></div><div class="face back">Թող ամեն առավոտ սկսվի լավ լուրով</div></div></button>
+      <button class="wish" type="button" aria-label="Մաղթանք 2"><div class="in"><div class="face front"><b>02</b><span>Բացիր մաղթանքը <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z" fill="#CDB8F2"/></svg></span></div><div class="face back">Թող ճամփորդություններդ լինեն անմոռանալի</div></div></button>
+      <button class="wish" type="button" aria-label="Մաղթանք 3"><div class="in"><div class="face front"><b>03</b><span>Բացիր մաղթանքը <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z" fill="#CDB8F2"/></svg></span></div><div class="face back">Թող կողքիդ միշտ լինեն քեզ սիրող մարդիկ</div></div></button>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="eyebrow">Եվ վերջում</div>
+    <h2 class="h2">Սեղմիր սրտին</h2>
+    <button class="heart-btn" id="heart" type="button" aria-label="Սիրտ">
+      <svg width="62" height="62" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z" fill="#4A2D8F"/></svg>
+    </button>
+    <div class="love" id="love" aria-live="polite">Սիրում եմ քեզ</div>
+  </section>
+
+  <footer>
+    <div class="logo"><svg viewBox="0 0 230 80" aria-hidden="true"><ellipse cx="112" cy="44" rx="106" ry="22" fill="none" stroke="#8B6BD9" stroke-width="4" stroke-linecap="round" stroke-dasharray="300 176" transform="rotate(-9 112 44)"/><path d="M200 2C201 12 204 15 214 16C204 17 201 20 200 30C199 20 196 17 186 16C196 15 199 12 200 2Z" fill="#8B6BD9"/></svg><b>MUSEO</b></div>
+    Ստեղծված է MUSEO-ի կողմից
+  </footer>
+</main>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Music box: "Happy Birthday" (1893, public domain) via Web Audio ---------- */
+  let ctx=null, master=null, playing=false, timer=null;
+  const N={G4:392,A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99};
+  const song=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
+              ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
+              ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
+              ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',3]];
+  const beat=.42;
+  function tone(f,t,d){
+    [1,2,3].forEach((h,i)=>{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type='sine'; o.frequency.value=f*h;
+      const v=[.22,.06,.025][i];
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.01);
+      g.gain.exponentialRampToValueAtTime(.0001,t+Math.max(d,.5)+.6);
+      o.connect(g).connect(master); o.start(t); o.stop(t+d+1.3);
+    });
+  }
+  function loop(){
+    if(!playing) return;
+    let t=ctx.currentTime+.08, total=0;
+    song.forEach(([n,b])=>{tone(N[n],t+total*beat,b*beat); total+=b;});
+    timer=setTimeout(loop,(total*beat+1.6)*1000);
+  }
+  const snd=document.getElementById('snd');
+  function setMusic(on){
+    try{
+      if(on){
+        if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)(); master=ctx.createGain(); master.gain.value=.8; master.connect(ctx.destination);}
+        ctx.resume(); if(!playing){playing=true; loop();}
+      }else{ playing=false; clearTimeout(timer); if(ctx) ctx.suspend(); }
+    }catch(e){ on=false; }
+    snd.classList.toggle('on',on); snd.setAttribute('aria-pressed',String(on));
+  }
+  snd.addEventListener('click',()=>setMusic(!playing));
+
+  /* ---------- Envelope ---------- */
+  const intro=document.getElementById('intro');
+  document.getElementById('openBtn').addEventListener('click',()=>{
+    intro.classList.add('open'); setMusic(true);
+    setTimeout(()=>intro.classList.add('gone'),200);
+  });
+
+  /* ---------- Confetti ---------- */
+  const cv=document.getElementById('confetti'), cx=cv.getContext('2d');
+  let parts=[], raf=null;
+  const cols=['#4A2D8F','#8B6BD9','#CDB8F2','#F6D7E2','#FFFFFF','#18141F','#FFE6A8'];
+  function size(){cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio;}
+  size(); addEventListener('resize',size);
+  function burst(x,y,n){
+    if(reduce) return;
+    for(let i=0;i<n;i++){
+      const a=Math.random()*Math.PI*2, s=4+Math.random()*9;
+      parts.push({x:x*devicePixelRatio,y:y*devicePixelRatio,vx:Math.cos(a)*s,vy:Math.sin(a)*s-7,w:6+Math.random()*8,h:4+Math.random()*6,
+        r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[i%cols.length],life:160+Math.random()*80,round:Math.random()<.3});
+    }
+    if(!raf) tick();
+  }
+  function tick(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    parts=parts.filter(p=>p.life-->0 && p.y<cv.height+40);
+    parts.forEach(p=>{
+      p.vy+=.22; p.vx*=.985; p.x+=p.vx*devicePixelRatio*.6; p.y+=p.vy*devicePixelRatio*.6; p.r+=p.vr;
+      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle=p.c; cx.globalAlpha=Math.min(1,p.life/40);
+      if(p.round){cx.beginPath();cx.arc(0,0,p.w*.45*devicePixelRatio,0,7);cx.fill();}
+      else cx.fillRect(-p.w/2*devicePixelRatio,-p.h/2*devicePixelRatio,p.w*devicePixelRatio,p.h*devicePixelRatio);
+      cx.restore();
+    });
+    raf=parts.length?requestAnimationFrame(tick):null;
+    if(!raf) cx.clearRect(0,0,cv.width,cv.height);
+  }
+
+  /* ---------- Candles ---------- */
+  const candles=[...document.querySelectorAll('.candle')], counter=document.getElementById('counter'), scene=document.getElementById('cakeScene');
+  const forms=['Մնաց 0 մոմ','Մնաց 1 մոմ','Մնաց 2 մոմ','Մնաց 3 մոմ'];
+  candles.forEach(c=>c.addEventListener('click',()=>{
+    if(c.classList.contains('out')) return;
+    c.classList.add('out');
+    const left=candles.filter(x=>!x.classList.contains('out')).length;
+    counter.textContent=forms[left];
+    if(left===0){
+      setTimeout(()=>{
+        scene.classList.add('celebrated');
+        counter.textContent='Մաղթանքդ կկատարվի';
+        const r=scene.querySelector('.cake-stage').getBoundingClientRect();
+        burst(innerWidth/2, r.top+40, 180);
+        setTimeout(()=>burst(innerWidth*.2, innerHeight*.3, 70),350);
+        setTimeout(()=>burst(innerWidth*.8, innerHeight*.3, 70),600);
+        typeLetter();
+      },450);
+    }
+  }));
+
+  /* ---------- Typewriter (text stays fully visible until the moment it plays) ---------- */
+  const typed=document.getElementById('typed'), full=typed.textContent; let typedOnce=false;
+  function typeLetter(){
+    if(typedOnce||reduce) return; typedOnce=true;
+    let i=0; typed.textContent='';
+    const caret=document.createElement('span'); caret.className='caret';
+    const txt=document.createTextNode(''); typed.append(txt,caret);
+    (function step(){ i+=1; txt.data=full.slice(0,i); if(i<full.length) setTimeout(step, full[i-1]==='։'||full[i-1]===','?260:32); else setTimeout(()=>caret.remove(),1500); })();
+  }
+
+  /* ---------- Wishes ---------- */
+  document.querySelectorAll('.wish').forEach(w=>w.addEventListener('click',()=>{
+    w.classList.toggle('flipped');
+    if(w.classList.contains('flipped')){const r=w.getBoundingClientRect(); burst(r.left+r.width/2, r.top+r.height/2, 26);}
+  }));
+
+  /* ---------- Heart finale ---------- */
+  const heart=document.getElementById('heart'), love=document.getElementById('love');
+  const hs='<svg width="SZ" height="SZ" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z" fill="COL"/></svg>';
+  heart.addEventListener('click',()=>{
+    love.classList.add('show');
+    if(reduce) return;
+    const r=heart.getBoundingClientRect();
+    for(let i=0;i<18;i++){
+      const s=document.createElement('div'); s.className='fly';
+      const sz=14+Math.random()*26;
+      s.innerHTML=hs.replace(/SZ/g,sz).replace('COL',['#4A2D8F','#8B6BD9','#CDB8F2','#F6D7E2'][i%4]);
+      s.style.left=(r.left+r.width/2-sz/2)+'px'; s.style.top=(r.top+r.height/2-sz/2)+'px';
+      s.style.setProperty('--dx',((Math.random()-.5)*320)+'px');
+      s.style.setProperty('--dy',(-140-Math.random()*320)+'px');
+      s.style.setProperty('--r',((Math.random()-.5)*80)+'deg');
+      s.style.animationDelay=(Math.random()*.25)+'s';
+      document.body.appendChild(s); setTimeout(()=>s.remove(),2000);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
